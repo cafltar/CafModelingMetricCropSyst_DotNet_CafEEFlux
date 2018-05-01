@@ -69,7 +69,7 @@ namespace Caf.CafModelingMetricCropSyst.Cli
 
                 command.OnExecute(() =>
                 {
-                    EEFluxParameters parameters = new EEFluxParameters(
+                    CafEEFluxParameters parameters = new CafEEFluxParameters(
                         Convert.ToDouble(latitudeOption.Value()),
                         Convert.ToDouble(longitudeOption.Value()),
                         DateTime.ParseExact(

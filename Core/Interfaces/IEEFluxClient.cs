@@ -7,7 +7,7 @@ namespace Caf.CafModelingMetricCropSyst.Core.Interfaces
 {
     public interface IEEFluxClient
     {
-        void GetImageMetadata(EEFluxParameters parameters);
+        void GetImageMetadata(CafEEFluxParameters parameters);
         void GetImageUri();
         void GetImage();
     }

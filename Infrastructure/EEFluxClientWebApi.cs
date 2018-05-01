@@ -13,6 +13,8 @@ namespace Caf.CafModelingMetricCropSyst.Infrastructure
         // Do not wrap in using statement: https://aspnetmonsters.com/2016/08/2016-08-27-httpclientwrong/
         private readonly HttpClient client;
 
+        private const string baseUrl = "https://eeflux-level1.appspot.com";
+
         public EEFluxClientWebApi(HttpClient httpClient)
         {
             client = httpClient;
@@ -22,7 +24,7 @@ namespace Caf.CafModelingMetricCropSyst.Infrastructure
             throw new NotImplementedException();
         }
 
-        public void GetImageMetadata(EEFluxParameters parameters)
+        public void GetImageMetadata(CafEEFluxParameters parameters)
         {
             throw new NotImplementedException();
         }

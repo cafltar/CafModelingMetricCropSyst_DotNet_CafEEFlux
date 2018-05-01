@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Caf.CafModelingMetricCropSyst.Core.Models
 {
-    public class EEFluxParameters
+    public class CafEEFluxParameters
     {
         public double Latitude { get; private set; }
         public double Longitude { get; private set; }
@@ -13,7 +13,7 @@ namespace Caf.CafModelingMetricCropSyst.Core.Models
         public double CloudinessThreshold { get; private set; }
         public int TierThreshold { get; private set; }
 
-        public EEFluxParameters(
+        public CafEEFluxParameters(
             double latitude,
             double longitude,
             DateTime startDate,
