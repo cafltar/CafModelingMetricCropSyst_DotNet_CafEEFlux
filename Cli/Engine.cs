@@ -11,16 +11,13 @@ namespace Caf.CafModelingMetricCropSyst.Cli
     public class Engine
     {
         private readonly IEEFluxClient fluxClient;
-        private readonly IGetParameters parameterEngine;
         private readonly CommandLineApplication app;
 
         public Engine(
             IEEFluxClient fluxClient,
-            IGetParameters parameterEngine,
             CommandLineApplication commandLineApplication)
         {
             this.fluxClient = fluxClient;
-            this.parameterEngine = parameterEngine;
             this.app = commandLineApplication;
         }
 
@@ -67,6 +64,11 @@ namespace Caf.CafModelingMetricCropSyst.Cli
                    "Tier value threshold (1,2), images with values above specified value will be excluded from downloaded",
                    CommandOptionType.SingleValue);
 
+                var writeFilePath = command.Option(
+                    "--writepath",
+                    "Absolute or relative path to write the files to",
+                    CommandOptionType.SingleOrNoValue);
+
                 command.OnExecute(() =>
                 {
                     CafEEFluxParameters parameters = new CafEEFluxParameters(
@@ -81,7 +83,8 @@ namespace Caf.CafModelingMetricCropSyst.Cli
                             "yyyyMMdd", 
                             CultureInfo.InvariantCulture),
                         Convert.ToDouble(cloudinessThresholdOption.Value()),
-                        Convert.ToInt16(tierThresholdOption.Value()));
+                        Convert.ToInt16(tierThresholdOption.Value()),
+                        writeFilePath.ToString());
 
                     fluxClient.GetImageMetadata(parameters).Wait();
 

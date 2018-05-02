@@ -23,10 +23,9 @@ namespace Caf.CafModelingMetricCropSyst.Cli
             HttpClient c = ResolveHttpClient();
             var m = ResolveImageTypeToUriMap();
             IEEFluxClient f = new EEFluxClientWebApi(c, b, m);
-            IGetParameters p = null;
             CommandLineApplication a = getConfiguredCli();
 
-            return new Engine(f, p, a);
+            return new Engine(f, a);
         }
 
         public static HttpClient ResolveHttpClient()

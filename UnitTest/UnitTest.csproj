@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <Folder Include="Mocks\" />
+    <Folder Include="Output\" />
   </ItemGroup>
 
   <ItemGroup>

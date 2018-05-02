@@ -6,11 +6,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Test
+namespace Caf.CafModelingMetricCropSyst.UnitTest
 {
     public class EEFluxClientWebApiTests
     {
@@ -35,7 +34,7 @@ namespace Test
         }
 
         [Fact]
-        public async Task GetImageUri_Etof_ReturnsDictionaryOfEEFluxImagesWithExpectedNumber()
+        public async Task GetImageUri_Etof_ReturnsDictionaryOfEEFluxImages()
         {
             // ARRANGE
             string imageId = "LE70420282015170EDC00";
@@ -68,7 +67,8 @@ namespace Test
                 new DateTime(2015, 06, 01),
                 new DateTime(2015, 06, 05),
                 30,
-                1);
+                1,
+                "/Output/test.zip");
 
             return parameters;
         }

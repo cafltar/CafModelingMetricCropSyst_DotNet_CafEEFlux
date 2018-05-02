@@ -15,6 +15,9 @@ namespace Caf.CafModelingMetricCropSyst.Core.Interfaces
                 CafEEFluxParameters parameters, 
                 string imageId,
                 EEFluxImageTypes imageType);
-        void GetImage();
+        Task DownloadImage(
+            //CafEEFluxParameters parameters,
+            string outputFilePath,
+            Uri imageUri);
     }
 }

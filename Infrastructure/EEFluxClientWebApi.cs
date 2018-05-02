@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,10 +28,7 @@ namespace Caf.CafModelingMetricCropSyst.Infrastructure
             this.baseAddress = new Uri(baseAddress);
             this.imageTypeToUriMap = imageTypeToUriMap;
         }
-        public void GetImage()
-        {
-            throw new NotImplementedException();
-        }
+        
 
         public async Task<Dictionary<int, EEFluxImageMetadata>> GetImageMetadata(
             CafEEFluxParameters parameters)
@@ -88,6 +86,29 @@ namespace Caf.CafModelingMetricCropSyst.Infrastructure
                 return imageUris;
             }
             else { return new Dictionary<EEFluxImageTypes, EEFluxImage>(); }
+        }
+
+        public async Task DownloadImage(
+            //CafEEFluxParameters parameters,
+            string outputDirectoryPath,
+            Uri imageUri)
+        {
+            // Stealing code from here: http://www.tugberkugurlu.com/archive/efficiently-streaming-large-http-responses-with-httpclient
+            using (HttpResponseMessage response = await client.GetAsync(
+                imageUri, HttpCompletionOption.ResponseHeadersRead))
+            {
+                string filePath =
+                    $"{outputDirectoryPath}\\{response.Content.Headers.ContentDisposition.FileName}";
+                using (Stream readStream = await response.Content.ReadAsStreamAsync())
+                {
+                    using (Stream writeStream = File.Open(
+                        filePath, 
+                        FileMode.Create))
+                    {
+                        await readStream.CopyToAsync(writeStream);
+                    }
+                }
+            }
         }
 
         private EEFluxRequest getEEFluxRequest(

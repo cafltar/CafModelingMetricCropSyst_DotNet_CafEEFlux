@@ -12,6 +12,7 @@ namespace Caf.CafModelingMetricCropSyst.Core.Models
         public DateTime EndDate { get; private set; }
         public double CloudinessThreshold { get; private set; }
         public int TierThreshold { get; private set; }
+        public string OutputDirectoryPath { get; private set; }
 
         public CafEEFluxParameters(
             double latitude,
@@ -19,7 +20,8 @@ namespace Caf.CafModelingMetricCropSyst.Core.Models
             DateTime startDate,
             DateTime endDate,
             double cloudinessThreshold,
-            int tierThreshold)
+            int tierThreshold,
+            string outputDirectoryPath)
         {
             Latitude = latitude;
             Longitude = longitude;
@@ -27,6 +29,7 @@ namespace Caf.CafModelingMetricCropSyst.Core.Models
             EndDate = endDate;
             CloudinessThreshold = cloudinessThreshold;
             TierThreshold = tierThreshold;
+            OutputDirectoryPath = outputDirectoryPath;
         }
     }
 }
