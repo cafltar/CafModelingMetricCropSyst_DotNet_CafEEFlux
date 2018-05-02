@@ -14,12 +14,13 @@ namespace Caf.CafModelingMetricCropSyst.Infrastructure
         // No interface available
         // Do not wrap in using statement: https://aspnetmonsters.com/2016/08/2016-08-27-httpclientwrong/
         private readonly HttpClient client;
-
+        private readonly Uri baseAddress;
         
 
-        public EEFluxClientWebApi(HttpClient httpClient)
+        public EEFluxClientWebApi(HttpClient httpClient, string baseAddress)
         {
             client = httpClient;
+            this.baseAddress = new Uri(baseAddress);
         }
         public void GetImage()
         {
@@ -37,7 +38,7 @@ namespace Caf.CafModelingMetricCropSyst.Infrastructure
             };
 
             StringContent content = new StringContent(JsonConvert.SerializeObject(requestContent));
-            Uri uri = new Uri(client.BaseAddress, "landsat");
+            Uri uri = new Uri(baseAddress, "landsat");
 
             HttpResponseMessage response = await client.PostAsync(
                 uri.ToString(), 

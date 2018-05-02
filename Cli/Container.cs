@@ -10,26 +10,35 @@ using System.Text;
 namespace Caf.CafModelingMetricCropSyst.Cli
 {
     
-    public class Container
+    public static class Container
     {
         /// <summary>
         /// Wires up all dependencies, called by composition root
         /// </summary>
         /// <returns>Engine that runs the program</returns>
-        public Engine ResolveEEFlux()
+        public static Engine ResolveEEFlux()
         {
-            HttpClient c = new HttpClient();
-            c.BaseAddress = new Uri("https://eeflux-level1.appspot.com");
-            c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-            IEEFluxClient f = new EEFluxClientWebApi(c);
+            string b = GetBaseAddress();
+            HttpClient c = ResolveHttpClient();
+            IEEFluxClient f = new EEFluxClientWebApi(c, b);
             IGetParameters p = null;
             CommandLineApplication a = getConfiguredCli();
 
             return new Engine(f, p, a);
         }
 
-        private CommandLineApplication getConfiguredCli()
+        public static HttpClient ResolveHttpClient()
+        {
+            HttpClient c = new HttpClient();
+            c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            return c;
+        }
+        public static string GetBaseAddress()
+        {
+            return "https://eeflux-level1.appspot.com";
+        }
+        private static CommandLineApplication getConfiguredCli()
         {
             // Learned how to use CommandLineApplication from here: https://gist.github.com/iamarcel/8047384bfbe9941e52817cf14a79dc34
             // Using updated version, not Microsofts: https://github.com/natemcmaster/CommandLineUtils
