@@ -83,7 +83,7 @@ namespace Caf.CafModelingMetricCropSyst.Cli
                         Convert.ToDouble(cloudinessThresholdOption.Value()),
                         Convert.ToInt16(tierThresholdOption.Value()));
 
-                    fluxClient.GetImageMetadata(parameters);
+                    fluxClient.GetImageMetadata(parameters).Wait();
 
                     return 0;
                 });

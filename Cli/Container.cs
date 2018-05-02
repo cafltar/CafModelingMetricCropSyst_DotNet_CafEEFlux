@@ -4,6 +4,7 @@ using McMaster.Extensions.CommandLineUtils;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 
 namespace Caf.CafModelingMetricCropSyst.Cli
@@ -18,6 +19,9 @@ namespace Caf.CafModelingMetricCropSyst.Cli
         public Engine ResolveEEFlux()
         {
             HttpClient c = new HttpClient();
+            c.BaseAddress = new Uri("https://eeflux-level1.appspot.com");
+            c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
             IEEFluxClient f = new EEFluxClientWebApi(c);
             IGetParameters p = null;
             CommandLineApplication a = getConfiguredCli();

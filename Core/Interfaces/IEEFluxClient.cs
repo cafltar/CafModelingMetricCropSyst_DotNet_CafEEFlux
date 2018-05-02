@@ -2,12 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Caf.CafModelingMetricCropSyst.Core.Interfaces
 {
     public interface IEEFluxClient
     {
-        void GetImageMetadata(CafEEFluxParameters parameters);
+        Task<Dictionary<int, EEFluxImageMetadata>> GetImageMetadata(CafEEFluxParameters parameters);
         void GetImageUri();
         void GetImage();
     }

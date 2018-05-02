@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 using Caf.CafModelingMetricCropSyst.Core.Interfaces;
 using Caf.CafModelingMetricCropSyst.Core.Models;
+using Newtonsoft.Json;
 
 namespace Caf.CafModelingMetricCropSyst.Infrastructure
 {
@@ -13,7 +15,7 @@ namespace Caf.CafModelingMetricCropSyst.Infrastructure
         // Do not wrap in using statement: https://aspnetmonsters.com/2016/08/2016-08-27-httpclientwrong/
         private readonly HttpClient client;
 
-        private const string baseUrl = "https://eeflux-level1.appspot.com";
+        
 
         public EEFluxClientWebApi(HttpClient httpClient)
         {
@@ -24,9 +26,36 @@ namespace Caf.CafModelingMetricCropSyst.Infrastructure
             throw new NotImplementedException();
         }
 
-        public void GetImageMetadata(CafEEFluxParameters parameters)
+        public async Task<Dictionary<int, EEFluxImageMetadata>> GetImageMetadata(CafEEFluxParameters parameters)
         {
-            throw new NotImplementedException();
+            EEFluxRequest requestContent = new EEFluxRequest()
+            {
+                Date = $"{parameters.StartDate.ToString("yyyy-MM-dd")} to {parameters.EndDate.ToString("yyyy-MM-dd")}",
+                ImageId = "",
+                Lat = parameters.Latitude,
+                Lon = parameters.Longitude
+            };
+
+            StringContent content = new StringContent(JsonConvert.SerializeObject(requestContent));
+            Uri uri = new Uri(client.BaseAddress, "landsat");
+
+            HttpResponseMessage response = await client.PostAsync(
+                uri.ToString(), 
+                content);
+
+            if(response.IsSuccessStatusCode)
+            {
+                string result = response.Content.ReadAsStringAsync().Result;
+
+                Dictionary<int, EEFluxImageMetadata> imageMetadatas =
+                    JsonConvert.DeserializeObject<Dictionary<int, EEFluxImageMetadata>>(result);
+
+                return imageMetadatas;
+            }
+            else
+            {
+                return new Dictionary<int, EEFluxImageMetadata>();
+            }
         }
 
         public void GetImageUri()
