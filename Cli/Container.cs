@@ -1,4 +1,5 @@
 ﻿using Caf.CafModelingMetricCropSyst.Core.Interfaces;
+using Caf.CafModelingMetricCropSyst.Core.Models;
 using Caf.CafModelingMetricCropSyst.Infrastructure;
 using McMaster.Extensions.CommandLineUtils;
 using System;
@@ -20,7 +21,8 @@ namespace Caf.CafModelingMetricCropSyst.Cli
         {
             string b = GetBaseAddress();
             HttpClient c = ResolveHttpClient();
-            IEEFluxClient f = new EEFluxClientWebApi(c, b);
+            var m = ResolveImageTypeToUriMap();
+            IEEFluxClient f = new EEFluxClientWebApi(c, b, m);
             IGetParameters p = null;
             CommandLineApplication a = getConfiguredCli();
 
@@ -37,6 +39,16 @@ namespace Caf.CafModelingMetricCropSyst.Cli
         public static string GetBaseAddress()
         {
             return "https://eeflux-level1.appspot.com";
+        }
+        public static Dictionary<EEFluxImageTypes, string> ResolveImageTypeToUriMap()
+        {
+            Dictionary<EEFluxImageTypes, string> imageTypeToUriMap =
+                new Dictionary<EEFluxImageTypes, string>();
+            imageTypeToUriMap.Add(EEFluxImageTypes.Ndvi, "download_ndvi");
+            imageTypeToUriMap.Add(EEFluxImageTypes.Etof, "download_etof");
+            imageTypeToUriMap.Add(EEFluxImageTypes.Eta, "download_eta");
+
+            return imageTypeToUriMap;
         }
         private static CommandLineApplication getConfiguredCli()
         {
