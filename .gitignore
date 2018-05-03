@@ -10,6 +10,7 @@
 *.sln.docstates
 Output/
 Assets/*.zip
+LE70440272015152EDC00_NDVI.zip
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
