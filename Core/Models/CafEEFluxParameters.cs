@@ -13,6 +13,7 @@ namespace Caf.CafModelingMetricCropSyst.Core.Models
         public double CloudinessThreshold { get; private set; }
         public int TierThreshold { get; private set; }
         public string OutputDirectoryPath { get; private set; }
+        // TODO: Add an array or list of EEFluxImageTypes so user can specify one or more for download (ndvi, etof, eta)
 
         public CafEEFluxParameters(
             double latitude,

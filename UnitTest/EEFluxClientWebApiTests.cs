@@ -26,7 +26,7 @@ namespace Caf.CafModelingMetricCropSyst.UnitTest
                 getEEFluxResponseLandsatValid());
 
             // ACT
-            actual = await sut.GetImageMetadata(parameters);
+            actual = await sut.GetImageMetadataAsync(parameters);
 
             // ASSERT
             Assert.Equal(actual, expected);
@@ -45,7 +45,7 @@ namespace Caf.CafModelingMetricCropSyst.UnitTest
                 "{\"etof\": {\"url\": \"https://earthengine.googleapis.com/api/download?docid=6277fdbbcb5e4e0bc2f2d5562f4d1c4a&token=da96164b598072a0163f34ceaac8f5b6\"}}");
             
             // ACT
-            var actual = await sut.GetImageUri(
+            var actual = await sut.GetImageUriAsync(
                 parameters, 
                 imageId, 
                 EEFluxImageTypes.Etof);

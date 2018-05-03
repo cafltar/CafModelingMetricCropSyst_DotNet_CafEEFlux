@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 
 namespace Caf.CafModelingMetricCropSyst.Infrastructure
 {
-    public class EEFluxClientWebApi : IEEFluxClient
+    public class EEFluxClientWebApi : IEEFluxClient<HttpResponseMessage>
     {
         // No interface available
         // Do not wrap in using statement: https://aspnetmonsters.com/2016/08/2016-08-27-httpclientwrong/
@@ -30,7 +30,7 @@ namespace Caf.CafModelingMetricCropSyst.Infrastructure
         }
         
 
-        public async Task<Dictionary<int, EEFluxImageMetadata>> GetImageMetadata(
+        public async Task<Dictionary<int, EEFluxImageMetadata>> GetImageMetadataAsync(
             CafEEFluxParameters parameters)
         {
             EEFluxRequest requestContent = getEEFluxRequest(parameters);
@@ -58,7 +58,7 @@ namespace Caf.CafModelingMetricCropSyst.Infrastructure
             }
         }
 
-        public async Task<Dictionary<EEFluxImageTypes, EEFluxImage>> GetImageUri(
+        public async Task<Dictionary<EEFluxImageTypes, EEFluxImage>> GetImageUriAsync(
             CafEEFluxParameters parameters,
             string imageId,
             EEFluxImageTypes imageType)
@@ -88,27 +88,25 @@ namespace Caf.CafModelingMetricCropSyst.Infrastructure
             else { return new Dictionary<EEFluxImageTypes, EEFluxImage>(); }
         }
 
-        public async Task DownloadImage(
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="imageUri"></param>
+        /// <returns></returns>
+        // TODO: Right now this loads the entire image to memory before sending to caller.  Figure out how to stream the data without depending on FileIO.
+        public async Task<HttpResponseMessage> DownloadImageAsync(
             //CafEEFluxParameters parameters,
-            string outputDirectoryPath,
             Uri imageUri)
         {
-            // Stealing code from here: http://www.tugberkugurlu.com/archive/efficiently-streaming-large-http-responses-with-httpclient
-            using (HttpResponseMessage response = await client.GetAsync(
-                imageUri, HttpCompletionOption.ResponseHeadersRead))
+            HttpResponseMessage response = await client.GetAsync(
+                imageUri);
+
+            if(response.IsSuccessStatusCode)
             {
-                string filePath =
-                    $"{outputDirectoryPath}\\{response.Content.Headers.ContentDisposition.FileName}";
-                using (Stream readStream = await response.Content.ReadAsStreamAsync())
-                {
-                    using (Stream writeStream = File.Open(
-                        filePath, 
-                        FileMode.Create))
-                    {
-                        await readStream.CopyToAsync(writeStream);
-                    }
-                }
+                return response;
             }
+            else { return response; }
+
         }
 
         private EEFluxRequest getEEFluxRequest(

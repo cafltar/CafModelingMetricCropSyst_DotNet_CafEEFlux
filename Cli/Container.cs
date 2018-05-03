@@ -22,7 +22,7 @@ namespace Caf.CafModelingMetricCropSyst.Cli
             string b = GetBaseAddress();
             HttpClient c = ResolveHttpClient();
             var m = ResolveImageTypeToUriMap();
-            IEEFluxClient f = new EEFluxClientWebApi(c, b, m);
+            IEEFluxClient<HttpResponseMessage> f = new EEFluxClientWebApi(c, b, m);
             CommandLineApplication a = getConfiguredCli();
 
             return new Engine(f, a);

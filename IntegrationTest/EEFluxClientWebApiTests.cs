@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Security.Cryptography;
+using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -22,16 +23,16 @@ namespace Caf.CafModelingMetricCropSyst.IntegrationTest
             string b = Container.GetBaseAddress();
             HttpClient c = Container.ResolveHttpClient();
             var m = Container.ResolveImageTypeToUriMap();
-            IEEFluxClient sut = new EEFluxClientWebApi(c, b, m);
+            IEEFluxClient<HttpResponseMessage> sut = new EEFluxClientWebApi(c, b, m);
 
             CafEEFluxParameters p = getCafEEFluxParametersValid();
 
             // ACT
             Dictionary<int, EEFluxImageMetadata> imageMetas = 
-                await sut.GetImageMetadata(p);
+                await sut.GetImageMetadataAsync(p);
 
             Dictionary<EEFluxImageTypes, EEFluxImage> image =
-                await sut.GetImageUri(
+                await sut.GetImageUriAsync(
                     p,
                     imageMetas[0].ImageId,
                     EEFluxImageTypes.Ndvi);
@@ -41,7 +42,23 @@ namespace Caf.CafModelingMetricCropSyst.IntegrationTest
             {
                 Directory.CreateDirectory(fullPath);
             }
-            await sut.DownloadImage(fullPath, imageUrl);
+            // await sut.DownloadImageAsync(fullPath, imageUrl);
+            Task<HttpResponseMessage> download = sut.DownloadImageAsync(imageUrl);
+
+            var response = await download;
+
+            string filePath =
+                $"{p.OutputDirectoryPath}\\{response.Content.Headers.ContentDisposition.FileName}";
+
+            using (Stream readStream = await response.Content.ReadAsStreamAsync())
+            {
+                using (Stream writeStream = File.Open(
+                    filePath, 
+                    FileMode.Create))
+                {
+                    await readStream.CopyToAsync(writeStream);
+                }
+            }
 
             // ASSERT
             Assert.True(

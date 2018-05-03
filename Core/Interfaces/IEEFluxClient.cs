@@ -1,23 +1,20 @@
 ﻿using Caf.CafModelingMetricCropSyst.Core.Models;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Caf.CafModelingMetricCropSyst.Core.Interfaces
 {
-    public interface IEEFluxClient
+    public interface IEEFluxClient<TResult> where TResult : class
     {
         Task<Dictionary<int, EEFluxImageMetadata>> 
-            GetImageMetadata(CafEEFluxParameters parameters);
+            GetImageMetadataAsync(CafEEFluxParameters parameters);
         Task<Dictionary<EEFluxImageTypes, EEFluxImage>> 
-            GetImageUri(
+            GetImageUriAsync(
                 CafEEFluxParameters parameters, 
                 string imageId,
                 EEFluxImageTypes imageType);
-        Task DownloadImage(
-            //CafEEFluxParameters parameters,
-            string outputFilePath,
+        Task<TResult> DownloadImageAsync(
             Uri imageUri);
     }
 }
