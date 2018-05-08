@@ -41,13 +41,9 @@ namespace Caf.CafModelingMetricCropSyst.Cli
         }
         public static Dictionary<EEFluxImageTypes, string> ResolveImageTypeToUriMap()
         {
-            Dictionary<EEFluxImageTypes, string> imageTypeToUriMap =
-                new Dictionary<EEFluxImageTypes, string>();
-            imageTypeToUriMap.Add(EEFluxImageTypes.Ndvi, "download_ndvi");
-            imageTypeToUriMap.Add(EEFluxImageTypes.Etof, "download_etof");
-            imageTypeToUriMap.Add(EEFluxImageTypes.Eta, "download_eta");
-
-            return imageTypeToUriMap;
+            MapImageTypeToUrlPath imageTypeToUriMap = 
+                new MapImageTypeToUrlPath();
+            return imageTypeToUriMap.map;
         }
         private static CommandLineApplication getConfiguredCli()
         {
