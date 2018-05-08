@@ -12,6 +12,9 @@ using System.Threading;
 
 namespace Caf.CafModelingMetricCropSyst.Cli
 {
+    /// <summary>
+    /// Represents the application doer -- it does it
+    /// </summary>
     public class Engine
     {
         private readonly IEEFluxClient<HttpResponseMessage> client;

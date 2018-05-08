@@ -10,7 +10,9 @@ using System.Text;
 
 namespace Caf.CafModelingMetricCropSyst.Cli
 {
-    
+    /// <summary>
+    /// Represents a poor man's dependency injector of sorts
+    /// </summary>
     public static class Container
     {
         /// <summary>
