@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -6,6 +6,7 @@
     <RootNamespace>Caf.CafModelingMetricCropSyst.Cli</RootNamespace>
     <RuntimeIdentifiers>win10-x64;opensuse-x64</RuntimeIdentifiers>
     <AssemblyName>CafEEFlux</AssemblyName>
+    <Version>0.1.0</Version>
   </PropertyGroup>
 
   <ItemGroup>

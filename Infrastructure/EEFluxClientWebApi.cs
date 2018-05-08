@@ -10,15 +10,21 @@ using Newtonsoft.Json;
 
 namespace Caf.CafModelingMetricCropSyst.Infrastructure
 {
+    /// <summary>
+    /// Web API implementation of IEEFluxClient
+    /// </summary>
     public class EEFluxClientWebApi : IEEFluxClient<HttpResponseMessage>
     {
-        // No interface available
-        // Do not wrap in using statement: https://aspnetmonsters.com/2016/08/2016-08-27-httpclientwrong/
         private readonly HttpClient client;
         private readonly Uri baseAddress;
         private readonly Dictionary<EEFluxImageTypes, string> imageTypeToUriMap;
         
-
+        /// <summary>
+        /// Constructor, no overloads
+        /// </summary>
+        /// <param name="httpClient">HttpClient</param>
+        /// <param name="baseAddress">Base URL for HttpClient</param>
+        /// <param name="imageTypeToUriMap">Dictionary to map <see cref="EEFluxImageTypes" /> to URL path string</param>
         public EEFluxClientWebApi(
             HttpClient httpClient, 
             string baseAddress,
@@ -29,10 +35,17 @@ namespace Caf.CafModelingMetricCropSyst.Infrastructure
             this.imageTypeToUriMap = imageTypeToUriMap;
         }
         
-
-        public async Task<Dictionary<int, EEFluxImageMetadata>> GetImageMetadataAsync(
-            CafEEFluxParameters parameters)
+        /// <summary>
+        /// Sends an HTTP POST to {baseAddress}/landsat to obtain a list of available images 
+        /// and their metadata between the specified dates in the parameter file
+        /// </summary>
+        /// <param name="parameters">Required parameters to be set: StartDate, EndDate, ImageId, Latitude, Longitude</param>
+        /// <returns>Task representing a dictionary of keys (0-#) and values (image metadata).</returns>
+        public async Task<Dictionary<int, EEFluxImageMetadata>> 
+            GetImageMetadataAsync(CafEEFluxParameters parameters)
         {
+            // TODO: Error checking
+
             EEFluxRequest requestContent = getEEFluxRequest(parameters);
 
             StringContent content = 
@@ -58,6 +71,13 @@ namespace Caf.CafModelingMetricCropSyst.Infrastructure
             }
         }
 
+        /// <summary>
+        /// Gets an image URL by sending an HTTP POST to {baseAddress}/{imageType}
+        /// </summary>
+        /// <param name="parameters">Required parameters to be set: StartDate, EndDate, ImageId, Latitude, Longitude</param>
+        /// <param name="imageId">ID of image</param>
+        /// <param name="imageType">Type of image to be requested (NDVI, Actual ET, etc)</param>
+        /// <returns></returns>
         public async Task<Dictionary<EEFluxImageTypes, EEFluxImage>> GetImageUriAsync(
             CafEEFluxParameters parameters,
             string imageId,
@@ -89,10 +109,12 @@ namespace Caf.CafModelingMetricCropSyst.Infrastructure
         }
 
         /// <summary>
-        /// 
+        /// Sends an HTTP GET request to supplied image URL and download the image
         /// </summary>
-        /// <param name="imageUri"></param>
-        /// <returns></returns>
+        /// <param name="imageUri">Complete URL of the file to be downloaded</param>
+        /// <returns>Task representing HTTP response message.
+        /// <remarks>Header content contains filename</remarks>
+        /// </returns>
         // TODO: Right now this loads the entire image to memory before sending to caller.  Figure out how to stream the data without depending on FileIO.
         public async Task<HttpResponseMessage> DownloadImageAsync(
             //CafEEFluxParameters parameters,
@@ -109,6 +131,12 @@ namespace Caf.CafModelingMetricCropSyst.Infrastructure
 
         }
 
+        /// <summary>
+        /// Converts CafEEFluxParameters to EEFluxRequest
+        /// </summary>
+        /// <param name="parameters">CafEEFluxParameters, expects StartDate, EndDate, ImageId, Latitude, Longitude</param>
+        /// <param name="imageId"></param>
+        /// <returns></returns>
         private EEFluxRequest getEEFluxRequest(
             CafEEFluxParameters parameters,
             string imageId = "")

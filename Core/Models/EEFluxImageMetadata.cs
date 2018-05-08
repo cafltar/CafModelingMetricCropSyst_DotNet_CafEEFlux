@@ -5,6 +5,9 @@ using System.Text;
 
 namespace Caf.CafModelingMetricCropSyst.Core.Models
 {
+    /// <summary>
+    /// Represents image metadata for a landsat 8 image via EEFlux
+    /// </summary>
     public class EEFluxImageMetadata : IEquatable<EEFluxImageMetadata>
     {
         [JsonProperty("date")]

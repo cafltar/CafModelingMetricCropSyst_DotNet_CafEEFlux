@@ -5,6 +5,9 @@ using System.Text;
 
 namespace Caf.CafModelingMetricCropSyst.Core.Models
 {
+    /// <summary>
+    /// Represents information needed by EEFlux to return image information
+    /// </summary>
     public class EEFluxRequest
     {
         [JsonProperty("lat")]

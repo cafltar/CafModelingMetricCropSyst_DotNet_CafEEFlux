@@ -5,6 +5,9 @@ using System.Text;
 
 namespace Caf.CafModelingMetricCropSyst.Core.Models
 {
+    /// <summary>
+    /// Represents an EEFlux image URL
+    /// </summary>
     public class EEFluxImage : IEquatable<EEFluxImage>
     {
         [JsonProperty("url")]
