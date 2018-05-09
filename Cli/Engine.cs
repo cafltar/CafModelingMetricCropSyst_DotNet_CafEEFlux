@@ -16,6 +16,7 @@ namespace Caf.CafModelingMetricCropSyst.Cli
     /// </summary>
     public class Engine
     {
+        // TODO: Abstract out HttpResponseMessage
         private readonly IEEFluxClient<HttpResponseMessage> client;
         private readonly CommandLineApplication app;
 
@@ -25,82 +26,81 @@ namespace Caf.CafModelingMetricCropSyst.Cli
         {
             this.client = fluxClient;
             this.app = commandLineApplication;
+
+            setupCommandLineInterface();
         }
 
         public void Execute(string[] args)
         {
-            setupCommandLineInterface();
             app.Execute(args);
         }
 
         private void setupCommandLineInterface()
         {
-            app.Command("get", (command) =>
+            app.HelpOption("-h|--help");
+
+            // TODO: Test if app.Option<double> prevents need to convert later
+            var latitudeOption = app.Option(
+                "--lat",
+                "Latitude (decimal degrees) for image location",
+                CommandOptionType.SingleValue)
+                .IsRequired();
+
+            var longitudeOption = app.Option(
+                "--lon",
+                "Longitude (decimal degrees) for image location",
+                CommandOptionType.SingleValue).IsRequired();
+
+            var startDateOption = app.Option(
+                "--startdate",
+                "Starting date to get images; in form of yyyyMMdd",
+                CommandOptionType.SingleValue)
+                .IsRequired();
+
+            var endDateOption = app.Option(
+                "--enddate",
+                "Ending date to get images; in form of yyyyMMdd",
+                CommandOptionType.SingleValue).IsRequired();
+
+            var cloudinessThresholdOption = app.Option(
+                "--cloudiness",
+                "Percent cloudiness value (0-100), images with value above specified value will be excluded from download",
+                CommandOptionType.SingleValue);
+
+            var tierThresholdOption = app.Option(
+                "--tier",
+                "Tier value threshold (1,2), images with values above specified value will be excluded from downloaded",
+                CommandOptionType.SingleValue)
+                .Accepts(v => v.Values("1", "2"));
+
+            var writeFilePath = app.Option(
+                "--writepath",
+                "Absolute or relative path to write the files to",
+                CommandOptionType.SingleValue)
+                .Accepts(v => v.ExistingDirectory());
+
+            app.OnExecute(() =>
             {
-                command.Description = "Get EEFlux images";
-                command.HelpOption("-?|-h|--help");
+                // TODO: Create a parameter builder class?
+                // TODO: Check for values, set defaults, etc (var clouds = cloudinessThresholdOption.HasValue() ? cloudinessThresholdOption.Value() : 100;)
+                CafEEFluxParameters parameters = new CafEEFluxParameters(
+                    Convert.ToDouble(latitudeOption.Value()),
+                    Convert.ToDouble(longitudeOption.Value()),
+                    DateTime.ParseExact(
+                        startDateOption.Value(), 
+                        "yyyyMMdd", 
+                        CultureInfo.InvariantCulture),
+                    DateTime.ParseExact(
+                        endDateOption.Value(), 
+                        "yyyyMMdd", 
+                        CultureInfo.InvariantCulture),
+                    Convert.ToDouble(cloudinessThresholdOption.Value()),
+                    Convert.ToInt16(tierThresholdOption.Value()),
+                    writeFilePath.Value().ToString());
 
-                var latitudeOption = command.Option(
-                    "--lat",
-                    "Latitude (decimal degrees) for image location",
-                    CommandOptionType.SingleValue)
-                    .IsRequired();
+                Get(parameters).Wait();
 
-                var longitudeOption = command.Option(
-                    "--lon",
-                    "Longitude (decimal degrees) for image location",
-                    CommandOptionType.SingleValue).IsRequired();
-
-                var startDateOption = command.Option(
-                   "--startdate",
-                   "Starting date to get images; in form of yyyyMMdd",
-                   CommandOptionType.SingleValue)
-                   .IsRequired();
-
-                var endDateOption = command.Option(
-                   "--enddate",
-                   "Ending date to get images; in form of yyyyMMdd",
-                   CommandOptionType.SingleValue).IsRequired();
-
-                var cloudinessThresholdOption = command.Option(
-                   "--cloudiness",
-                   "Percent cloudiness value (0-100), images with value above specified value will be excluded from download",
-                   CommandOptionType.SingleValue);
-
-                var tierThresholdOption = command.Option(
-                   "--tier",
-                   "Tier value threshold (1,2), images with values above specified value will be excluded from downloaded",
-                   CommandOptionType.SingleValue)
-                   .Accepts(v => v.Values("1", "2"));
-
-                var writeFilePath = command.Option(
-                    "--writepath",
-                    "Absolute or relative path to write the files to",
-                    CommandOptionType.SingleValue)
-                    .Accepts(v => v.ExistingDirectory());
-
-                command.OnExecute(() =>
-                {
-                    // TODO: Create a parameter builder...
-                    CafEEFluxParameters parameters = new CafEEFluxParameters(
-                        Convert.ToDouble(latitudeOption.Value()),
-                        Convert.ToDouble(longitudeOption.Value()),
-                        DateTime.ParseExact(
-                            startDateOption.Value(), 
-                            "yyyyMMdd", 
-                            CultureInfo.InvariantCulture),
-                        DateTime.ParseExact(
-                            endDateOption.Value(), 
-                            "yyyyMMdd", 
-                            CultureInfo.InvariantCulture),
-                        Convert.ToDouble(cloudinessThresholdOption.Value()),
-                        Convert.ToInt16(tierThresholdOption.Value()),
-                        writeFilePath.Value().ToString());
-
-                    Get(parameters).Wait();
-
-                    return 0;
-                });
+                return 0;
             });
         }
 
