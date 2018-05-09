@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using McMaster.Extensions.CommandLineUtils;
 using Caf.CafModelingMetricCropSyst.Core.Interfaces;
 using Caf.CafModelingMetricCropSyst.Core.Models;
@@ -30,11 +29,11 @@ namespace Caf.CafModelingMetricCropSyst.Cli
 
         public void Execute(string[] args)
         {
-            setupCli();
+            setupCommandLineInterface();
             app.Execute(args);
         }
 
-        private void setupCli()
+        private void setupCommandLineInterface()
         {
             app.Command("get", (command) =>
             {
@@ -44,22 +43,24 @@ namespace Caf.CafModelingMetricCropSyst.Cli
                 var latitudeOption = command.Option(
                     "--lat",
                     "Latitude (decimal degrees) for image location",
-                    CommandOptionType.SingleValue);
+                    CommandOptionType.SingleValue)
+                    .IsRequired();
 
                 var longitudeOption = command.Option(
                     "--lon",
                     "Longitude (decimal degrees) for image location",
-                    CommandOptionType.SingleValue);
+                    CommandOptionType.SingleValue).IsRequired();
 
                 var startDateOption = command.Option(
                    "--startdate",
                    "Starting date to get images; in form of yyyyMMdd",
-                   CommandOptionType.SingleValue);
+                   CommandOptionType.SingleValue)
+                   .IsRequired();
 
                 var endDateOption = command.Option(
                    "--enddate",
                    "Ending date to get images; in form of yyyyMMdd",
-                   CommandOptionType.SingleValue);
+                   CommandOptionType.SingleValue).IsRequired();
 
                 var cloudinessThresholdOption = command.Option(
                    "--cloudiness",
@@ -69,15 +70,18 @@ namespace Caf.CafModelingMetricCropSyst.Cli
                 var tierThresholdOption = command.Option(
                    "--tier",
                    "Tier value threshold (1,2), images with values above specified value will be excluded from downloaded",
-                   CommandOptionType.SingleValue);
+                   CommandOptionType.SingleValue)
+                   .Accepts(v => v.Values("1", "2"));
 
                 var writeFilePath = command.Option(
                     "--writepath",
                     "Absolute or relative path to write the files to",
-                    CommandOptionType.SingleValue);
+                    CommandOptionType.SingleValue)
+                    .Accepts(v => v.ExistingDirectory());
 
                 command.OnExecute(() =>
                 {
+                    // TODO: Create a parameter builder...
                     CafEEFluxParameters parameters = new CafEEFluxParameters(
                         Convert.ToDouble(latitudeOption.Value()),
                         Convert.ToDouble(longitudeOption.Value()),
@@ -126,14 +130,19 @@ namespace Caf.CafModelingMetricCropSyst.Cli
             {
                 return 0;
             }
+
             Directory.CreateDirectory(writeDirPath);
 
+            // TODO: This should loop over a list generated from params
             foreach(var type in Enum.GetValues(typeof(EEFluxImageTypes)))
             {
                 Console.WriteLine($"Working on {type.ToString()}...");
 
+                // TODO: Move this to a new function to clean up code
                 foreach(var image in imageMetas)
                 {
+
+                    // TODO: Filter by cloudiness and tiers (or create a new list and work on that) (or a function in EEFluxClientWebApi?  Maybe this isn't it's responsibility?)
                     string imageId = image.Value.ImageId;
 
                     Dictionary<EEFluxImageTypes, EEFluxImage> eeFluxImageUrl =
