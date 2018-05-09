@@ -68,7 +68,8 @@ namespace Caf.CafModelingMetricCropSyst.UnitTest
                 new DateTime(2015, 06, 05),
                 30,
                 1,
-                "/Output/test.zip");
+                "/Output/test.zip",
+                new List<EEFluxImageTypes>() { EEFluxImageTypes.Eta });
 
             return parameters;
         }

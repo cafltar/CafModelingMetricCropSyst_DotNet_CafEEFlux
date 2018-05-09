@@ -19,15 +19,16 @@ namespace Caf.CafModelingMetricCropSyst.Cli
         /// Wires up all dependencies, called by composition root
         /// </summary>
         /// <returns>Engine that runs the program</returns>
-        public static Engine ResolveEEFlux()
+        public static Engine ResolveCafEEFluxCli()
         {
             string b = GetBaseAddress();
             HttpClient c = ResolveHttpClient();
             var m = ResolveImageTypeToUriMap();
             IEEFluxClient<HttpResponseMessage> f = new EEFluxClientWebApi(c, b, m);
             CommandLineApplication a = getConfiguredCli();
+            IParseParameters<CommandOption> p = new CommandLineUtilParameterParser();
 
-            return new Engine(f, a);
+            return new Engine(f, a, p);
         }
 
         public static HttpClient ResolveHttpClient()

@@ -6,7 +6,7 @@ namespace Caf.CafModelingMetricCropSyst.Cli
     {
         static void Main(string[] args)
         {
-            Container.ResolveEEFlux().Execute(args);
+            Container.ResolveCafEEFluxCli().Execute(args);
         }
     }
 }

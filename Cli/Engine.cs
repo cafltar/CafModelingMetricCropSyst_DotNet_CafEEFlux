@@ -8,6 +8,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.IO;
 using System.Threading;
+using System.Linq;
 
 namespace Caf.CafModelingMetricCropSyst.Cli
 {
@@ -16,16 +17,18 @@ namespace Caf.CafModelingMetricCropSyst.Cli
     /// </summary>
     public class Engine
     {
-        // TODO: Abstract out HttpResponseMessage
         private readonly IEEFluxClient<HttpResponseMessage> client;
         private readonly CommandLineApplication app;
+        private readonly IParseParameters<CommandOption> parameterParser;
 
         public Engine(
             IEEFluxClient<HttpResponseMessage> fluxClient,
-            CommandLineApplication commandLineApplication)
+            CommandLineApplication commandLineApplication,
+            IParseParameters<CommandOption> parameterParser)
         {
             this.client = fluxClient;
             this.app = commandLineApplication;
+            this.parameterParser = parameterParser;
 
             setupCommandLineInterface();
         }
@@ -40,13 +43,13 @@ namespace Caf.CafModelingMetricCropSyst.Cli
             app.HelpOption("-h|--help");
 
             // TODO: Test if app.Option<double> prevents need to convert later
-            var latitudeOption = app.Option(
+            var latitudeOption = app.Option<Double>(
                 "--lat",
                 "Latitude (decimal degrees) for image location",
                 CommandOptionType.SingleValue)
                 .IsRequired();
 
-            var longitudeOption = app.Option(
+            var longitudeOption = app.Option<Double>(
                 "--lon",
                 "Longitude (decimal degrees) for image location",
                 CommandOptionType.SingleValue).IsRequired();
@@ -62,7 +65,7 @@ namespace Caf.CafModelingMetricCropSyst.Cli
                 "Ending date to get images; in form of yyyyMMdd",
                 CommandOptionType.SingleValue).IsRequired();
 
-            var cloudinessThresholdOption = app.Option(
+            var cloudinessThresholdOption = app.Option<Double>(
                 "--cloudiness",
                 "Percent cloudiness value (0-100), images with value above specified value will be excluded from download",
                 CommandOptionType.SingleValue);
@@ -73,38 +76,46 @@ namespace Caf.CafModelingMetricCropSyst.Cli
                 CommandOptionType.SingleValue)
                 .Accepts(v => v.Values("1", "2"));
 
-            var writeFilePath = app.Option(
+            var writeFilePathOption = app.Option(
                 "--writepath",
                 "Absolute or relative path to write the files to",
                 CommandOptionType.SingleValue)
                 .Accepts(v => v.ExistingDirectory());
 
+            var imageTypesOption = app.Option(
+                "--imagetypes",
+                "Comma separated list of image types to download. Quotes are required. [true_color, false_color_4, false_color_7, albedo, ndvi, dem, land_use, lst, etr24, eto24, etrf, etof, eta]",
+                CommandOptionType.SingleValue);
+
             app.OnExecute(() =>
             {
                 // TODO: Create a parameter builder class?
                 // TODO: Check for values, set defaults, etc (var clouds = cloudinessThresholdOption.HasValue() ? cloudinessThresholdOption.Value() : 100;)
-                CafEEFluxParameters parameters = new CafEEFluxParameters(
-                    Convert.ToDouble(latitudeOption.Value()),
-                    Convert.ToDouble(longitudeOption.Value()),
-                    DateTime.ParseExact(
-                        startDateOption.Value(), 
-                        "yyyyMMdd", 
-                        CultureInfo.InvariantCulture),
-                    DateTime.ParseExact(
-                        endDateOption.Value(), 
-                        "yyyyMMdd", 
-                        CultureInfo.InvariantCulture),
-                    Convert.ToDouble(cloudinessThresholdOption.Value()),
-                    Convert.ToInt16(tierThresholdOption.Value()),
-                    writeFilePath.Value().ToString());
 
-                Get(parameters).Wait();
+                var parameters = parameterParser.Parse(app.GetOptions());
+
+                //CafEEFluxParameters parameters = new CafEEFluxParameters(
+                //    Convert.ToDouble(latitudeOption.Value()),
+                //    Convert.ToDouble(longitudeOption.Value()),
+                //    DateTime.ParseExact(
+                //        startDateOption.Value(), 
+                //        "yyyyMMdd", 
+                //        CultureInfo.InvariantCulture),
+                //    DateTime.ParseExact(
+                //        endDateOption.Value(), 
+                //        "yyyyMMdd", 
+                //        CultureInfo.InvariantCulture),
+                //    Convert.ToDouble(cloudinessThresholdOption.Value()),
+                //    Convert.ToInt16(tierThresholdOption.Value()),
+                //    writeFilePathOption.Value().ToString());
+                
+                GetImages(parameters).Wait();
 
                 return 0;
             });
         }
 
-        private async Task<int> Get(CafEEFluxParameters parameters)
+        private async Task<int> GetImages(CafEEFluxParameters parameters)
         {
             Console.WriteLine("Getting images...");
 

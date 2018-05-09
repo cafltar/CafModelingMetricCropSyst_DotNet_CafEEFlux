@@ -79,7 +79,8 @@ namespace Caf.CafModelingMetricCropSyst.IntegrationTest
                 new DateTime(2015, 06, 05),
                 30,
                 1,
-                "Output");
+                "Output",
+                new List<EEFluxImageTypes>() { EEFluxImageTypes.Eta });
 
             return parameters;
         }

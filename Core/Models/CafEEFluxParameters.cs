@@ -46,7 +46,7 @@ namespace Caf.CafModelingMetricCropSyst.Core.Models
         /// </summary>
         public string OutputDirectoryPath { get; private set; }
         
-        // TODO: Add an array or list of EEFluxImageTypes so user can specify one or more for download (ndvi, etof, eta)
+        public List<EEFluxImageTypes> ImageTypes { get; private set; }
 
         public CafEEFluxParameters(
             double latitude,
@@ -55,7 +55,8 @@ namespace Caf.CafModelingMetricCropSyst.Core.Models
             DateTime endDate,
             double cloudinessThreshold,
             int tierThreshold,
-            string outputDirectoryPath)
+            string outputDirectoryPath,
+            List<EEFluxImageTypes> imageTypes)
         {
             Latitude = latitude;
             Longitude = longitude;
@@ -64,6 +65,7 @@ namespace Caf.CafModelingMetricCropSyst.Core.Models
             CloudinessThreshold = cloudinessThreshold;
             TierThreshold = tierThreshold;
             OutputDirectoryPath = outputDirectoryPath;
+            ImageTypes = imageTypes;
         }
     }
 }
