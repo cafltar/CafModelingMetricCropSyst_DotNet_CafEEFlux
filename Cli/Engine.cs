@@ -86,7 +86,7 @@ namespace Caf.CafModelingMetricCropSyst.Cli
                 "-q|--quiet",
                 "Sets quiet mode, meaning no user interaction.  Default is true. [true, false']",
                 CommandOptionType.SingleValue)
-                .Accepts(v => v.Values("T", "F"));
+                .Accepts(v => v.Values("true", "false"));
 
             app.OnExecute(() =>
             {
