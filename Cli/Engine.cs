@@ -116,6 +116,9 @@ namespace Caf.CafModelingMetricCropSyst.Cli
 
             Console.WriteLine($"After filtering, {imageMetasFiltered.Count} images remain");
 
+            if (imageMetasFiltered.Count == 0)
+                return 0;
+
             string writeDirPath;
             if (Path.IsPathRooted(parameters.OutputDirectoryPath))
             {
