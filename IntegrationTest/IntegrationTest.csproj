@@ -16,6 +16,7 @@
     <ProjectReference Include="..\Cli\Cli.csproj" />
     <ProjectReference Include="..\Core\Core.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
+    <ProjectReference Include="..\TestHelpers\TestUtils.csproj" />
   </ItemGroup>
 
   <ItemGroup>

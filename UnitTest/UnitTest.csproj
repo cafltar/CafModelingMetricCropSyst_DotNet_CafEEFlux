@@ -5,11 +5,12 @@
 
     <IsPackable>false</IsPackable>
 
-    <RootNamespace>Caf.CafModelingMetricCropSyst.Test</RootNamespace>
+    <RootNamespace>Caf.CafModelingMetricCropSyst.UnitTest</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.7.0" />
+    <PackageReference Include="Moq" Version="4.8.2" />
     <PackageReference Include="RichardSzalay.MockHttp" Version="4.0.0" />
     <PackageReference Include="xunit" Version="2.3.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
@@ -17,18 +18,28 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Mocks\" />
+    <Folder Include="Assets\TestFolderOnly\" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Cli\Cli.csproj" />
     <ProjectReference Include="..\Core\Core.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
+    <ProjectReference Include="..\TestHelpers\TestUtils.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <None Update="Assets\EEFluxResponseLandsatValid.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\TestFolderOnly\LE70440272015152EDC00_NDVI\LE70440272015152EDC00_NDVI.NDVI.tfw">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\TestFolderOnly\LE70440272015152EDC00_NDVI\LE70440272015152EDC00_NDVI.NDVI.tif">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\TestZipOnly\LE70440272015152EDC00_NDVI.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 

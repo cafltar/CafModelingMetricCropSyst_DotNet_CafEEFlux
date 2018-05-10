@@ -48,6 +48,8 @@ namespace Caf.CafModelingMetricCropSyst.Core.Models
         
         public List<EEFluxImageTypes> ImageTypes { get; private set; }
 
+        public bool IsQuietMode { get; private set; }
+
         public CafEEFluxParameters(
             double latitude,
             double longitude,
@@ -56,7 +58,8 @@ namespace Caf.CafModelingMetricCropSyst.Core.Models
             double cloudinessThreshold,
             int tierThreshold,
             string outputDirectoryPath,
-            List<EEFluxImageTypes> imageTypes)
+            List<EEFluxImageTypes> imageTypes,
+            bool isQuietMode = true)
         {
             Latitude = latitude;
             Longitude = longitude;
@@ -66,6 +69,7 @@ namespace Caf.CafModelingMetricCropSyst.Core.Models
             TierThreshold = tierThreshold;
             OutputDirectoryPath = outputDirectoryPath;
             ImageTypes = imageTypes;
+            IsQuietMode = isQuietMode;
         }
     }
 }

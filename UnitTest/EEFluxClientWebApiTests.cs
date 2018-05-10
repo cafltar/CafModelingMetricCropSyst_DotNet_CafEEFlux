@@ -1,6 +1,7 @@
 using Caf.CafModelingMetricCropSyst.Cli;
 using Caf.CafModelingMetricCropSyst.Core.Models;
 using Caf.CafModelingMetricCropSyst.Infrastructure;
+using Caf.CafModelingMetricCropSyst.TestUtils;
 using RichardSzalay.MockHttp;
 using System;
 using System.Collections.Generic;
@@ -13,12 +14,17 @@ namespace Caf.CafModelingMetricCropSyst.UnitTest
 {
     public class EEFluxClientWebApiTests
     {
+        public EEFluxClientWebApiTests()
+        {
+            Directory.CreateDirectory("Output");
+        }
+
         [Fact]
         public async Task GetImageMetadata_ValidParams_ReturnsDictionaryOfEEFluxImageMetadata()
         {
             // ARRANGE
-            var parameters = getCafEEFluxParametersValid();
-            var expected = getEEFluxImageMetadataValid();
+            var parameters = Arranger.GetCafEEFluxParametersValid();
+            var expected = Arranger.GetEEFluxImageMetadataValid();
             var actual = new Dictionary<int, EEFluxImageMetadata>();
 
             EEFluxClientWebApi sut = arrangeEEFluxClientWebApi(
@@ -38,7 +44,7 @@ namespace Caf.CafModelingMetricCropSyst.UnitTest
         {
             // ARRANGE
             string imageId = "LE70420282015170EDC00";
-            var parameters = getCafEEFluxParametersValid();
+            var parameters = Arranger.GetCafEEFluxParametersValid();
             var expected = getEEFluxResponseDownloadEtofValid();
             EEFluxClientWebApi sut = arrangeEEFluxClientWebApi(
                 "download_etof",
@@ -59,47 +65,8 @@ namespace Caf.CafModelingMetricCropSyst.UnitTest
             string content = File.ReadAllText("Assets/EEFluxResponseLandsatValid.json");
             return content;
         }
-        private CafEEFluxParameters getCafEEFluxParametersValid()
-        {
-            CafEEFluxParameters parameters = new CafEEFluxParameters(
-                47.4395843855568,
-                -118.35367508232594,
-                new DateTime(2015, 06, 01),
-                new DateTime(2015, 06, 05),
-                30,
-                1,
-                "/Output/test.zip",
-                new List<EEFluxImageTypes>() { EEFluxImageTypes.Eta });
-
-            return parameters;
-        }
-        private Dictionary<int, EEFluxImageMetadata> getEEFluxImageMetadataValid()
-        {
-            Dictionary<int, EEFluxImageMetadata> imageMetas = new Dictionary<int, EEFluxImageMetadata>();
-
-            imageMetas.Add(0, new EEFluxImageMetadata()
-            {
-                Date = new DateTime(2015, 06, 01),
-                ImageId = "LE70440272015152EDC00",
-                Tier = "T1",
-                PercentCloudCover = 88.0
-            });
-            imageMetas.Add(1, new EEFluxImageMetadata()
-            {
-                Date = new DateTime(2015, 06, 02),
-                ImageId = "LC80430272015153LGN01",
-                Tier = "T1",
-                PercentCloudCover = 90.540000000000006
-            });
-            imageMetas.Add(2, new EEFluxImageMetadata()
-            {
-                Date = new DateTime(2015, 06, 02),
-                ImageId = "LC80430282015153LGN01",
-                Tier = "T1",
-                PercentCloudCover = 55.759999999999998
-            });
-            return imageMetas;
-        }
+        
+        
         private EEFluxClientWebApi arrangeEEFluxClientWebApi(
             string path,
             string mockResponse)

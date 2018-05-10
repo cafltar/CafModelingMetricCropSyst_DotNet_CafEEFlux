@@ -32,6 +32,8 @@ namespace Caf.CafModelingMetricCropSyst.Cli
                 o => o.LongName == "writepath");
             var images = parameters.SingleOrDefault(
                 o => o.LongName == "imagetypes");
+            var quiet = parameters.SingleOrDefault(
+                o => o.LongName == "quiet");
 
             double latv = lat.HasValue() 
                 ? Convert.ToDouble(lat.Value()) 
@@ -57,7 +59,9 @@ namespace Caf.CafModelingMetricCropSyst.Cli
             List<EEFluxImageTypes> imagev = images.HasValue()
                 ? parseImageTypes(images.Value())
                 : new List<EEFluxImageTypes>();
-
+            bool quietv = quiet.HasValue()
+                ? Boolean.Parse(quiet.Value())
+                : false;
 
             var p = new CafEEFluxParameters(
                 latv, 
@@ -67,7 +71,8 @@ namespace Caf.CafModelingMetricCropSyst.Cli
                 cloudv, 
                 tierv, 
                 pathv,
-                imagev);
+                imagev,
+                quietv);
 
             return p;
         }

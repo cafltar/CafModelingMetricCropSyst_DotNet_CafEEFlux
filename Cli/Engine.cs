@@ -28,21 +28,17 @@ namespace Caf.CafModelingMetricCropSyst.Cli
         {
             this.client = fluxClient;
             this.app = commandLineApplication;
-            this.parameterParser = parameterParser;
-
-            setupCommandLineInterface();
+            this.parameterParser = parameterParser;   
         }
 
         public void Execute(string[] args)
         {
+            setupCommandLineInterface();
             app.Execute(args);
         }
 
         private void setupCommandLineInterface()
         {
-            //app.HelpOption("-h|--help");
-
-            // TODO: Test if app.Option<double> prevents need to convert later
             var latitudeOption = app.Option<Double>(
                 "--lat",
                 "Latitude (decimal degrees) for image location",
@@ -86,35 +82,22 @@ namespace Caf.CafModelingMetricCropSyst.Cli
                 "Comma separated list of image types to download. Quotes are required. [true_color, false_color_4, false_color_7, albedo, ndvi, dem, land_use, lst, etr24, eto24, etrf, etof, eta]",
                 CommandOptionType.SingleValue);
 
+            var isQuietMode = app.Option(
+                "-q|--quiet",
+                "Sets quiet mode, meaning no user interaction.  Default is true. [true, false']",
+                CommandOptionType.SingleValue)
+                .Accepts(v => v.Values("T", "F"));
+
             app.OnExecute(() =>
             {
-                // TODO: Create a parameter builder class?
-                // TODO: Check for values, set defaults, etc (var clouds = cloudinessThresholdOption.HasValue() ? cloudinessThresholdOption.Value() : 100;)
-
                 var parameters = parameterParser.Parse(app.GetOptions());
-
-                //CafEEFluxParameters parameters = new CafEEFluxParameters(
-                //    Convert.ToDouble(latitudeOption.Value()),
-                //    Convert.ToDouble(longitudeOption.Value()),
-                //    DateTime.ParseExact(
-                //        startDateOption.Value(), 
-                //        "yyyyMMdd", 
-                //        CultureInfo.InvariantCulture),
-                //    DateTime.ParseExact(
-                //        endDateOption.Value(), 
-                //        "yyyyMMdd", 
-                //        CultureInfo.InvariantCulture),
-                //    Convert.ToDouble(cloudinessThresholdOption.Value()),
-                //    Convert.ToInt16(tierThresholdOption.Value()),
-                //    writeFilePathOption.Value().ToString());
-                
                 GetImages(parameters).Wait();
 
                 return 0;
             });
         }
 
-        private async Task<int> GetImages(CafEEFluxParameters parameters)
+        public async Task<int> GetImages(CafEEFluxParameters parameters)
         {
             Console.WriteLine("Getting images...");
 
@@ -123,6 +106,9 @@ namespace Caf.CafModelingMetricCropSyst.Cli
 
             Console.WriteLine($"Found {imageMetas.Count} landsat images.");
 
+            // TODO: Filter by cloudiness, tier, landsat8
+
+            //Console.WriteLine($"After filtering, {imageMetasFiltered.Count} images remain");
             string writeDirPath;
             if (Path.IsPathRooted(parameters.OutputDirectoryPath))
             {
@@ -136,24 +122,37 @@ namespace Caf.CafModelingMetricCropSyst.Cli
 
             Console.WriteLine($"Images will be saved to: {writeDirPath}");
 
-            if(!Prompt.GetYesNo("Would you like to proceed?",true))
+            if (!parameters.IsQuietMode)
             {
-                return 0;
+                if (!Prompt.GetYesNo("Would you like to proceed?", true))
+                {
+                    return 0;
+                }
             }
 
             Directory.CreateDirectory(writeDirPath);
 
             // TODO: This should loop over a list generated from params
-            foreach(var type in Enum.GetValues(typeof(EEFluxImageTypes)))
+            foreach(EEFluxImageTypes type in parameters.ImageTypes)
             {
+
                 Console.WriteLine($"Working on {type.ToString()}...");
 
                 // TODO: Move this to a new function to clean up code
                 foreach(var image in imageMetas)
                 {
 
-                    // TODO: Filter by cloudiness and tiers (or create a new list and work on that) (or a function in EEFluxClientWebApi?  Maybe this isn't it's responsibility?)
                     string imageId = image.Value.ImageId;
+
+                    // Check if image already downloaded
+                    if (doesImageFileExist(
+                        imageId,
+                        type.ToString(),
+                        writeDirPath))
+                    {
+                        Console.WriteLine($"  File {imageId}_{type.ToString()} found, skipping download.");
+                        continue;
+                    }
 
                     Dictionary<EEFluxImageTypes, EEFluxImage> eeFluxImageUrl =
                         await client.GetImageUriAsync(
@@ -197,5 +196,51 @@ namespace Caf.CafModelingMetricCropSyst.Cli
 
             return 0;
         }
+
+        private bool doesImageFileExist(
+            string imageName,
+            string fileType,
+            string outputDir)
+        {
+            var files = Directory.GetFiles(outputDir);
+            var dirs = Directory.GetDirectories(outputDir);
+
+            string name = $"{imageName}_{fileType}".ToUpper();
+
+            if(files.Length > 0)
+            {
+                if(files.Where(
+                    f => f.Contains($"{name}.zip")).ToList().Count > 0)
+                {
+                    return true;
+                }
+            }
+            if(dirs.Length > 0)
+            {
+                if(dirs.Where(
+                    d => d.Contains(name)).ToList().Count > 0)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        //private Dictionary<int, EEFluxImageMetadata> filterOutDownloadedImages(
+        //    Dictionary<int, EEFluxImageMetadata> imageMetas,
+        //    List<EEFluxImageTypes> imageTypes,
+        //    string outputDir)
+        //{
+        //    var response = new Dictionary<int, EEFluxImageMetadata>(imageMetas);
+        //    var files = Directory.GetFiles(outputDir);
+        //    var dirs = Directory.GetDirectories(outputDir);
+        //
+        //    foreach(var item in response)
+        //    {
+        //        string name = $"{item.Value.ImageId}"
+        //        if(item.Value.ImageId)
+        //    }
+        //}
     }
 }
