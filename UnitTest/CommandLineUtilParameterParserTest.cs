@@ -6,6 +6,7 @@ using System.Text;
 using Xunit;
 using Caf.CafModelingMetricCropSyst.Cli;
 using System.Linq;
+using System.IO;
 
 namespace Caf.CafModelingMetricCropSyst.Test
 {
@@ -30,6 +31,23 @@ namespace Caf.CafModelingMetricCropSyst.Test
             Assert.Equal(1, actual.TierThreshold);
             Assert.Equal(@"C:\Dev\Projects\CafModelingMetricCropSyst\DotNet\CafEEFlux", actual.OutputDirectoryPath);
             Assert.Equal(3, actual.ImageTypes.Count);
+        }
+
+        [Fact]
+        public void Parse_OutputDirNotSpecified_SetsCurrentWorkingDir()
+        {
+            // ARRANGE
+            var parameters = 
+                resetCommandOption(getCommandOptionsListValid(), "writepath");
+            var sut = new CommandLineUtilParameterParser();
+            var expected = @"C:\";
+            Directory.SetCurrentDirectory(expected);
+
+            // ACT
+            var actual = sut.Parse(parameters);
+
+            // ASSERT
+            Assert.Equal(expected, actual.OutputDirectoryPath);
         }
 
         [Fact]
@@ -95,14 +113,15 @@ namespace Caf.CafModelingMetricCropSyst.Test
         private List<CommandOption> resetCommandOption(
             List<CommandOption> originalList,
             string longName,
-            string newValue)
+            string newValue = null)
         {
             List<CommandOption> newList = new List<CommandOption>(originalList);
 
             newList.Remove(newList.Single(o => o.LongName == longName));
 
             CommandOption c = new CommandOption($"--{longName}", CommandOptionType.SingleValue);
-            c.TryParse(newValue);
+
+            if (!String.IsNullOrEmpty(newValue)) c.TryParse(newValue);
 
             newList.Add(c);
 

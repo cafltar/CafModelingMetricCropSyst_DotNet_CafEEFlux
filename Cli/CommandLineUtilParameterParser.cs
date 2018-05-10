@@ -7,6 +7,7 @@ using System.Text;
 using McMaster.Extensions.CommandLineUtils;
 using System.Linq;
 using System.Globalization;
+using System.IO;
 
 namespace Caf.CafModelingMetricCropSyst.Cli
 {
@@ -52,7 +53,7 @@ namespace Caf.CafModelingMetricCropSyst.Cli
                 : 1;
             string pathv = path.HasValue()
                 ? path.Value()
-                : "";
+                : Directory.GetCurrentDirectory();
             List<EEFluxImageTypes> imagev = images.HasValue()
                 ? parseImageTypes(images.Value())
                 : new List<EEFluxImageTypes>();

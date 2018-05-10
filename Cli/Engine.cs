@@ -40,7 +40,7 @@ namespace Caf.CafModelingMetricCropSyst.Cli
 
         private void setupCommandLineInterface()
         {
-            app.HelpOption("-h|--help");
+            //app.HelpOption("-h|--help");
 
             // TODO: Test if app.Option<double> prevents need to convert later
             var latitudeOption = app.Option<Double>(
@@ -78,9 +78,8 @@ namespace Caf.CafModelingMetricCropSyst.Cli
 
             var writeFilePathOption = app.Option(
                 "--writepath",
-                "Absolute or relative path to write the files to",
-                CommandOptionType.SingleValue)
-                .Accepts(v => v.ExistingDirectory());
+                "Absolute or relative path to write the files to.  If not specified, images will be downloaded to current working directory",
+                CommandOptionType.SingleValue);
 
             var imageTypesOption = app.Option(
                 "--imagetypes",
