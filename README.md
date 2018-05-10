@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Command line utility to automate downloading of EEFlux images from the [EEFlux App](https://eeflux-level1.appspot.com/).
+Command line utility to automate downloading of EEFlux images from the [EEFlux App](https://eeflux-level1.appspot.com/).  This was developed with a single project in mind and is not intended to be used by the public.  Comments and advise is welcome though.
 
 ## Introduction
 
