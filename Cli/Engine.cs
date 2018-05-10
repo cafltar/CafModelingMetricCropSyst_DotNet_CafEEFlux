@@ -168,6 +168,13 @@ namespace Caf.CafModelingMetricCropSyst.Cli
                             parameters,
                             imageId,
                             type);
+
+                    if (eeFluxImageUrl.Count == 0)
+                    {
+                        Console.WriteLine($"  Error getting URL, aborting.");
+                        continue;
+                    }
+
                     Uri imageUrl =
                         new Uri(eeFluxImageUrl[type].Url);
 
