@@ -4,7 +4,7 @@
 
 Command line utility to automate downloading of EEFlux images from the [EEFlux App](https://eeflux-level1.appspot.com/).
 
-## Instructions
+## Introduction
 
 CafEEFlux is a cross-platform command line interface that can be run on numerous flavors of linux, Windows, and Mac OS.  The application will download multiple image layers supported by EEFlux within a given date range at a given location and filter by cloudiness and tier level.  The current version only downloads images generated from Landsat8.  All options are specified on the command line.  Use the option "-h" (or "--help") for details.
 
