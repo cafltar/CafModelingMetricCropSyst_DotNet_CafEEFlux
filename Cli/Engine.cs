@@ -107,6 +107,12 @@ namespace Caf.CafModelingMetricCropSyst.Cli
             Console.WriteLine($"Found {imageMetas.Count} landsat images.");
 
             // TODO: Filter by cloudiness, tier, landsat8
+            var imageMetasFiltered =
+                filterImages(
+                    imageMetas,
+                    parameters.CloudinessThreshold,
+                    parameters.TierThreshold,
+                    true);
 
             //Console.WriteLine($"After filtering, {imageMetasFiltered.Count} images remain");
             string writeDirPath;
@@ -132,14 +138,13 @@ namespace Caf.CafModelingMetricCropSyst.Cli
 
             Directory.CreateDirectory(writeDirPath);
 
-            // TODO: This should loop over a list generated from params
             foreach(EEFluxImageTypes type in parameters.ImageTypes)
             {
 
                 Console.WriteLine($"Working on {type.ToString()}...");
 
                 // TODO: Move this to a new function to clean up code
-                foreach(var image in imageMetas)
+                foreach(var image in imageMetasFiltered)
                 {
 
                     string imageId = image.Value.ImageId;
@@ -158,21 +163,27 @@ namespace Caf.CafModelingMetricCropSyst.Cli
                         await client.GetImageUriAsync(
                             parameters,
                             imageId,
-                            (EEFluxImageTypes)type);
+                            type);
                     Uri imageUrl =
-                        new Uri(eeFluxImageUrl[(EEFluxImageTypes)type].Url);
+                        new Uri(eeFluxImageUrl[type].Url);
 
                     Console.WriteLine($"  Downloading: {imageUrl}... ");
 
                     Task<HttpResponseMessage> download = 
                         client.DownloadImageAsync(imageUrl);
-                    while(!download.IsCompleted)
+
+                    while (!download.IsCompleted)
                     {
                         Thread.Sleep(5000);
                         Console.Write(".");
                     }
                     var response = await download;
 
+                    if(response == null)
+                    {
+                        Console.WriteLine("    Error downloading and/or saving file");
+                        continue;
+                    }
                     string fileName = 
                         response.Content.Headers.ContentDisposition.FileName;
                     string filePath =
@@ -227,20 +238,65 @@ namespace Caf.CafModelingMetricCropSyst.Cli
             return false;
         }
 
-        //private Dictionary<int, EEFluxImageMetadata> filterOutDownloadedImages(
-        //    Dictionary<int, EEFluxImageMetadata> imageMetas,
-        //    List<EEFluxImageTypes> imageTypes,
-        //    string outputDir)
-        //{
-        //    var response = new Dictionary<int, EEFluxImageMetadata>(imageMetas);
-        //    var files = Directory.GetFiles(outputDir);
-        //    var dirs = Directory.GetDirectories(outputDir);
-        //
-        //    foreach(var item in response)
-        //    {
-        //        string name = $"{item.Value.ImageId}"
-        //        if(item.Value.ImageId)
-        //    }
-        //}
+        private Dictionary<int, EEFluxImageMetadata> filterImages(
+            Dictionary<int, EEFluxImageMetadata> imageMetas,
+            double minAcceptedCloudPercent,
+            int minAcceptedTierLevel,
+            bool shouldOnlyAcceptLandsat8)
+        {
+            var response = new Dictionary<int, EEFluxImageMetadata>();
+
+            foreach (var item in imageMetas)
+            {
+                var v = item.Value;
+                bool isAcceptable =
+                    isAcceptableCloudiness(
+                        v.PercentCloudCover,
+                        minAcceptedCloudPercent)
+                    && isAcceptableTier(
+                        v.Tier,
+                        minAcceptedTierLevel)
+                    && isAcceptableSatellite(v.ImageId);
+
+                if(isAcceptable)
+                {
+                    response.Add(item.Key, item.Value);
+                }
+            }
+
+            return response;
+        }
+
+        private bool isAcceptableCloudiness(
+            double value,
+            double threshold)
+        {
+            if (value > threshold) return false;
+
+            return true;
+        }
+
+        private bool isAcceptableTier(
+            string value,
+            int threshold)
+        {
+            // Filters out RT; will cause issues if I implement R2 downloading
+            if (value != "T1" && value != "T2")
+                return false;
+
+            if (Convert.ToInt32(value[1].ToString()) > threshold)
+                return false;
+
+            return true;
+        }
+
+        private bool isAcceptableSatellite(
+            string imageId)
+        {
+            if (imageId[2].ToString() != "8")
+                return false;
+
+            return true;
+        }
     }
 }

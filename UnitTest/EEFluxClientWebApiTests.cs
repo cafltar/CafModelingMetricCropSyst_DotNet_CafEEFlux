@@ -45,7 +45,7 @@ namespace Caf.CafModelingMetricCropSyst.UnitTest
             // ARRANGE
             string imageId = "LE70420282015170EDC00";
             var parameters = Arranger.GetCafEEFluxParametersValid();
-            var expected = getEEFluxResponseDownloadEtofValid();
+            var expected = Arranger.GetEEFluxResponseDownloadEtofValid();
             EEFluxClientWebApi sut = arrangeEEFluxClientWebApi(
                 "download_etof",
                 "{\"etof\": {\"url\": \"https://earthengine.googleapis.com/api/download?docid=6277fdbbcb5e4e0bc2f2d5562f4d1c4a&token=da96164b598072a0163f34ceaac8f5b6\"}}");
@@ -86,18 +86,6 @@ namespace Caf.CafModelingMetricCropSyst.UnitTest
 
             return r;
         }
-        private Dictionary<EEFluxImageTypes, EEFluxImage> 
-            getEEFluxResponseDownloadEtofValid()
-        {
-            Dictionary<EEFluxImageTypes, EEFluxImage> images = 
-                new Dictionary<EEFluxImageTypes, EEFluxImage>();
-            images.Add(
-                EEFluxImageTypes.Etof,
-                new EEFluxImage()
-                {
-                    Url = "https://earthengine.googleapis.com/api/download?docid=6277fdbbcb5e4e0bc2f2d5562f4d1c4a&token=da96164b598072a0163f34ceaac8f5b6"
-                });
-            return images;
-        }
+        
     }
 }

@@ -61,5 +61,94 @@ namespace Caf.CafModelingMetricCropSyst.UnitTest
             // ASSERT
             e.Verify(x => x.GetImageUriAsync(parameters, It.IsAny<string>(), It.IsAny<EEFluxImageTypes>()),Times.Never);
         }
+
+        [Fact]
+        public async Task GetImages_FileExists_DoesNotDownload()
+        {
+            // ARRANGE
+            var p = Arranger.GetCafEEFluxParametersValid();
+            var parameters = new CafEEFluxParameters(
+                p.Latitude, p.Latitude,
+                p.StartDate, p.EndDate,
+                p.CloudinessThreshold, p.TierThreshold,
+                $"{Directory.GetCurrentDirectory()}\\Assets\\TestZipOnly",
+                new List<EEFluxImageTypes>() { EEFluxImageTypes.Ndvi });
+            var u = Arranger.GetEEFluxResponseDownloadEtofValid();
+
+            var imageMeta =
+                new Dictionary<int, EEFluxImageMetadata>();
+            imageMeta.Add(
+                0,
+                Arranger.GetEEFluxImageMetadataValid()[0]);
+                
+            Mock<IEEFluxClient<HttpResponseMessage>> e = 
+                new Mock<IEEFluxClient<HttpResponseMessage>>();
+            e.Setup(x => x.GetImageMetadataAsync(parameters))
+                .Returns(Task.FromResult(imageMeta));
+            e.Setup(x => x.GetImageUriAsync(
+                It.IsAny<CafEEFluxParameters>(),
+                It.IsAny<string>(),
+                It.IsAny<EEFluxImageTypes>()))
+                .Returns(Task.FromResult(u));
+
+            var c = new CommandLineApplication();
+
+            var o = new Mock<IParseParameters<CommandOption>>();
+            o.Setup(x =>  x.Parse(
+                It.IsAny<IEnumerable<CommandOption>>()))
+                .Returns(parameters);
+
+            var sut = new Engine(e.Object, c, o.Object);
+
+            // ACT
+            int result = await sut.GetImages(parameters);
+
+            // ASSERT
+            e.Verify(x => x.GetImageUriAsync(
+                parameters, 
+                It.IsAny<string>(), 
+                It.IsAny<EEFluxImageTypes>()),
+                Times.Never);
+        }
+
+        [Fact]
+        public async Task GetImages_OneNoClouds_DownloadsOneOfThree()
+        {
+            // ARRANGE
+            var p = Arranger.GetCafEEFluxParametersValid();
+            var imageMeta = Arranger.GetEEFluxImageMetadataOneNoClouds();
+            var u = Arranger.GetEEFluxResponseDownloadEtaValid();
+
+            Mock<IEEFluxClient<HttpResponseMessage>> e = 
+                new Mock<IEEFluxClient<HttpResponseMessage>>();
+            e.Setup(x => x.GetImageMetadataAsync(p))
+                .Returns(Task.FromResult(imageMeta));
+            e.Setup(x => x.GetImageUriAsync(
+                It.IsAny<CafEEFluxParameters>(),
+                It.IsAny<string>(),
+                It.IsAny<EEFluxImageTypes>()))
+                .Returns(Task.FromResult(u));
+          
+                //
+            var c = new CommandLineApplication();
+
+            var o = new Mock<IParseParameters<CommandOption>>();
+            o.Setup(x => x.Parse(
+                It.IsAny<IEnumerable<CommandOption>>()))
+                .Returns(p);
+
+            var sut = new Engine(e.Object, c, o.Object);
+
+            // ACT
+            int result = await sut.GetImages(p);
+
+            // ASSERT
+            e.Verify(x => x.GetImageUriAsync(
+                p, 
+                It.IsAny<string>(), 
+                It.IsAny<EEFluxImageTypes>()), 
+                Times.Exactly(1));
+
+        }
     }
 }

@@ -127,7 +127,7 @@ namespace Caf.CafModelingMetricCropSyst.TestUtils
                 Date = new DateTime(2015, 06, 01),
                 ImageId = "LE70440272015152EDC00",
                 Tier = "T1",
-                PercentCloudCover = 0.0
+                PercentCloudCover = 88.0
             });
             imageMetas.Add(1, new EEFluxImageMetadata()
             {
@@ -141,7 +141,7 @@ namespace Caf.CafModelingMetricCropSyst.TestUtils
                 Date = new DateTime(2015, 06, 02),
                 ImageId = "LC80430282015153LGN01",
                 Tier = "T1",
-                PercentCloudCover = 55.759999999999998
+                PercentCloudCover = 0.0
             });
             return imageMetas;
         }
@@ -171,6 +171,33 @@ namespace Caf.CafModelingMetricCropSyst.TestUtils
                 PercentCloudCover = 55.759999999999998
             });
             return imageMetas;
+        }
+
+        public static Dictionary<EEFluxImageTypes, EEFluxImage> 
+            GetEEFluxResponseDownloadEtofValid()
+        {
+            Dictionary<EEFluxImageTypes, EEFluxImage> images = 
+                new Dictionary<EEFluxImageTypes, EEFluxImage>();
+            images.Add(
+                EEFluxImageTypes.Etof,
+                new EEFluxImage()
+                {
+                    Url = "https://earthengine.googleapis.com/api/download?docid=6277fdbbcb5e4e0bc2f2d5562f4d1c4a&token=da96164b598072a0163f34ceaac8f5b6"
+                });
+            return images;
+        }
+        public static Dictionary<EEFluxImageTypes, EEFluxImage> 
+            GetEEFluxResponseDownloadEtaValid()
+        {
+            Dictionary<EEFluxImageTypes, EEFluxImage> images = 
+                new Dictionary<EEFluxImageTypes, EEFluxImage>();
+            images.Add(
+                EEFluxImageTypes.Eta,
+                new EEFluxImage()
+                {
+                    Url = "https://earthengine.googleapis.com/api/download?docid=6277fdbbcb5e4e0bc2f2d5562f4d1c4a&token=da96164b598072a0163f34ceaac8f5b6"
+                });
+            return images;
         }
     }
 }
