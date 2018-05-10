@@ -154,21 +154,21 @@ namespace Caf.CafModelingMetricCropSyst.TestUtils
                 Date = new DateTime(2015, 06, 01),
                 ImageId = "LE70440272015152EDC00",
                 Tier = "T1",
-                PercentCloudCover = 88.0
+                PercentCloudCover = 0.0
             });
             imageMetas.Add(1, new EEFluxImageMetadata()
             {
                 Date = new DateTime(2015, 06, 02),
                 ImageId = "LC80430272015153LGN01",
                 Tier = "T1",
-                PercentCloudCover = 90.540000000000006
+                PercentCloudCover = 0.0
             });
             imageMetas.Add(2, new EEFluxImageMetadata()
             {
                 Date = new DateTime(2015, 06, 02),
                 ImageId = "LC80430282015153LGN01",
                 Tier = "T2",
-                PercentCloudCover = 55.759999999999998
+                PercentCloudCover = 0.0
             });
             return imageMetas;
         }

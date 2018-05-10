@@ -114,7 +114,8 @@ namespace Caf.CafModelingMetricCropSyst.Cli
                     parameters.TierThreshold,
                     true);
 
-            //Console.WriteLine($"After filtering, {imageMetasFiltered.Count} images remain");
+            Console.WriteLine($"After filtering, {imageMetasFiltered.Count} images remain");
+
             string writeDirPath;
             if (Path.IsPathRooted(parameters.OutputDirectoryPath))
             {
