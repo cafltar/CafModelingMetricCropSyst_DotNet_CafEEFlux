@@ -38,6 +38,9 @@
     <None Update="Assets\TestFolderOnly\LE70440272015152EDC00_NDVI\LE70440272015152EDC00_NDVI.NDVI.tif">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Assets\TestZipOnly\LC80420272015130LGN01_EToF.zip">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Assets\TestZipOnly\LE70440272015152EDC00_NDVI.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

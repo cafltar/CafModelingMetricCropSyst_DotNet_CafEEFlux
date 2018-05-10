@@ -38,7 +38,7 @@ namespace Caf.CafModelingMetricCropSyst.UnitTest
                 new Dictionary<int, EEFluxImageMetadata>();
             imageMeta.Add(
                 0,
-                Arranger.GetEEFluxImageMetadataValid()[0]);
+                Arranger.GetEEFluxImageMetadataActual()[0]);
                 
             Mock<IEEFluxClient<HttpResponseMessage>> e = 
                 new Mock<IEEFluxClient<HttpResponseMessage>>();
@@ -79,7 +79,7 @@ namespace Caf.CafModelingMetricCropSyst.UnitTest
                 new Dictionary<int, EEFluxImageMetadata>();
             imageMeta.Add(
                 0,
-                Arranger.GetEEFluxImageMetadataValid()[0]);
+                Arranger.GetEEFluxImageMetadataAllValid()[0]);
                 
             Mock<IEEFluxClient<HttpResponseMessage>> e = 
                 new Mock<IEEFluxClient<HttpResponseMessage>>();

@@ -61,7 +61,7 @@ namespace Caf.CafModelingMetricCropSyst.Cli
                 : new List<EEFluxImageTypes>();
             bool quietv = quiet.HasValue()
                 ? Boolean.Parse(quiet.Value())
-                : false;
+                : true;
 
             var p = new CafEEFluxParameters(
                 latv, 

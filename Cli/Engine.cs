@@ -173,39 +173,47 @@ namespace Caf.CafModelingMetricCropSyst.Cli
 
                     Console.WriteLine($"  Downloading: {imageUrl}... ");
 
-                    Task<HttpResponseMessage> download = 
-                        client.DownloadImageAsync(imageUrl);
-
-                    while (!download.IsCompleted)
+                    try
                     {
-                        Thread.Sleep(5000);
-                        Console.Write(".");
-                    }
-                    var response = await download;
+                        Task<HttpResponseMessage> download = 
+                            client.DownloadImageAsync(imageUrl);
 
-                    if(response == null)
-                    {
-                        Console.WriteLine("    Error downloading and/or saving file");
-                        continue;
-                    }
-                    string fileName = 
-                        response.Content.Headers.ContentDisposition.FileName;
-                    string filePath =
-                        $"{writeDirPath}\\" +
-                        $"{fileName}";
-
-                    Console.WriteLine($"    Saving to: {filePath}... ");
-
-                    using (Stream readStream = 
-                        await response.Content.ReadAsStreamAsync())
-                    {
-                        using (Stream writeStream = File.Open(
-                            filePath, 
-                            FileMode.Create))
+                        while (!download.IsCompleted)
                         {
-                            await readStream.CopyToAsync(writeStream);
+                            Thread.Sleep(5000);
+                            Console.Write(".");
+                        }
+                        var response = await download;
+
+                        if(response == null)
+                        {
+                            Console.WriteLine("    Error downloading and/or saving file");
+                            continue;
+                        }
+                        string fileName = 
+                            response.Content.Headers.ContentDisposition.FileName;
+                        string filePath =
+                            $"{writeDirPath}\\" +
+                            $"{fileName}";
+
+                        Console.WriteLine($"    Saving to: {filePath}... ");
+
+                        using (Stream readStream = 
+                            await response.Content.ReadAsStreamAsync())
+                        {
+                            using (Stream writeStream = File.Open(
+                                filePath, 
+                                FileMode.Create))
+                            {
+                                await readStream.CopyToAsync(writeStream);
+                            }
                         }
                     }
+                    catch(Exception e)
+                    {
+                        Console.WriteLine($"    Error while downloading: {e.ToString()}");
+                        continue;
+                    } 
                 }
             }
 
@@ -214,18 +222,18 @@ namespace Caf.CafModelingMetricCropSyst.Cli
 
         private bool doesImageFileExist(
             string imageName,
-            string fileType,
+            string imageType,
             string outputDir)
         {
             var files = Directory.GetFiles(outputDir);
             var dirs = Directory.GetDirectories(outputDir);
 
-            string name = $"{imageName}_{fileType}".ToUpper();
+            string name = $"{imageName}_{imageType}".ToUpper();
 
             if(files.Length > 0)
             {
                 if(files.Where(
-                    f => f.Contains($"{name}.zip")).ToList().Count > 0)
+                    f => f.ToUpper().Contains($"{name}.ZIP")).ToList().Count > 0)
                 {
                     return true;
                 }
@@ -233,7 +241,7 @@ namespace Caf.CafModelingMetricCropSyst.Cli
             if(dirs.Length > 0)
             {
                 if(dirs.Where(
-                    d => d.Contains(name)).ToList().Count > 0)
+                    d => d.ToUpper().Contains(name)).ToList().Count > 0)
                 {
                     return true;
                 }

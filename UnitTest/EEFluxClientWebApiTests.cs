@@ -24,7 +24,7 @@ namespace Caf.CafModelingMetricCropSyst.UnitTest
         {
             // ARRANGE
             var parameters = Arranger.GetCafEEFluxParametersValid();
-            var expected = Arranger.GetEEFluxImageMetadataValid();
+            var expected = Arranger.GetEEFluxImageMetadataActual();
             var actual = new Dictionary<int, EEFluxImageMetadata>();
 
             EEFluxClientWebApi sut = arrangeEEFluxClientWebApi(

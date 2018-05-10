@@ -91,7 +91,7 @@ namespace Caf.CafModelingMetricCropSyst.TestUtils
             return parameters;
         }
 
-        public static Dictionary<int, EEFluxImageMetadata> GetEEFluxImageMetadataValid()
+        public static Dictionary<int, EEFluxImageMetadata> GetEEFluxImageMetadataActual()
         {
             Dictionary<int, EEFluxImageMetadata> imageMetas = new Dictionary<int, EEFluxImageMetadata>();
 
@@ -115,6 +115,33 @@ namespace Caf.CafModelingMetricCropSyst.TestUtils
                 ImageId = "LC80430282015153LGN01",
                 Tier = "T1",
                 PercentCloudCover = 55.759999999999998
+            });
+            return imageMetas;
+        }
+        public static Dictionary<int, EEFluxImageMetadata> GetEEFluxImageMetadataAllValid()
+        {
+            Dictionary<int, EEFluxImageMetadata> imageMetas = new Dictionary<int, EEFluxImageMetadata>();
+
+            imageMetas.Add(0, new EEFluxImageMetadata()
+            {
+                Date = new DateTime(2015, 06, 01),
+                ImageId = "LE80440272015152EDC00",
+                Tier = "T1",
+                PercentCloudCover = 0.0
+            });
+            imageMetas.Add(1, new EEFluxImageMetadata()
+            {
+                Date = new DateTime(2015, 06, 02),
+                ImageId = "LC80430272015153LGN01",
+                Tier = "T1",
+                PercentCloudCover = 0.0
+            });
+            imageMetas.Add(2, new EEFluxImageMetadata()
+            {
+                Date = new DateTime(2015, 06, 02),
+                ImageId = "LC80430282015153LGN01",
+                Tier = "T1",
+                PercentCloudCover = 0.0
             });
             return imageMetas;
         }

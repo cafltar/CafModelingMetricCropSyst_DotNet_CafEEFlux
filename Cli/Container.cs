@@ -35,6 +35,7 @@ namespace Caf.CafModelingMetricCropSyst.Cli
         {
             HttpClient c = new HttpClient();
             c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            c.Timeout = TimeSpan.FromMinutes(30);
 
             return c;
         }
