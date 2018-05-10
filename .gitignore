@@ -12,6 +12,8 @@ Output/
 Assets/*.zip
 LE70440272015152EDC00_NDVI.zip
 LE70440272015152EDC00*
+TestZipOnly/
+TestFolderOnly/
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
