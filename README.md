@@ -25,6 +25,8 @@ Options:
   -q|--quiet    Sets quiet mode, meaning no user interaction.  Default is true. [true, false]
 ```
 
+The images will be downloaded into the current working directory, unless otherwise specified by the --writepath option.
+
 ### Example
 
 The following will download NDVI and ETOF images that overlap the point (46.781021, -117.081407) between April 01, 2015 and Sept. 01, 2016.  Images that have cloud cover more than 20 percent and a quality level of T2 or RT will not be downloaded.
