@@ -2,15 +2,17 @@
 
 ## Purpose
 
-Command line utility to automate downloading of EEFlux images from the [EEFlux App](https://eeflux-level1.appspot.com/).  This was developed with a single project in mind and is not intended to be used by the public.  Comments and advise is welcome though.
+Command line utility to automate downloading of EEFlux images from the [EEFlux App](https://eeflux-level1.appspot.com/).  This was developed with a single project in mind and is not intended to be used by the public.  Comments and advise are welcome though.
 
 ## Introduction
 
-CafEEFlux is a cross-platform command line interface that can be run on numerous flavors of linux, Windows, and Mac OS.  The application will download multiple image layers supported by EEFlux within a given date range at a given location and filter by cloudiness and tier level.  The current version only downloads images generated from Landsat8.  All options are specified on the command line.  Use the option "-h" (or "--help") for details.
+CafEEFlux is a cross-platform command line interface that can be run on numerous flavors of linux, Windows, and Mac OS.  The application will download multiple image layers supported by EEFlux within a given date range at a given location and filter by cloudiness and tier level.  The current version only downloads images generated from Landsat8.
 
 From the EEFlux website (https://eeflux-level1.appspot.com/):
 
 > "A reference for general equations for EEFlux, based on those of METRIC is available at: http://www.intechopen.com/books/evapotranspiration-remote-sensing-and-modeling/operational-remote-sensing-of-et-and-challenges which is an Intech book chapter compiled by Dr. Ayse Kilic (Irmak) of the Univ. Nebraska-Lincoln and associates at the University of Idaho and Desert Research Institute in 2012. An original reference for METRIC is Allen et al., 2007 published in the ASCE J. Irrigation and Drainage Engineering."
+
+All options are specified on the command line.  Use the option "-h" (or "--help") for details.
 
 ```console
 > CafEEFlux -h
